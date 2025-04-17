@@ -1,4 +1,4 @@
-package github.com/zalbiraw/jwtvalidator
+package jwtvalidator
 
 import (
 	"context"
@@ -8,8 +8,6 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
-
-	"jwtvalidator"
 
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -21,7 +19,7 @@ func generateJWT(secret string, claims map[string]interface{}) string {
 }
 
 func TestJWTValidator(t *testing.T) {
-	cfg := jwtvalidator.CreateConfig()
+	cfg := CreateConfig()
 	cfg.SigningSecret = "mysecret"
 	cfg.ForwardHeaders = map[string]string{
 		"Group":      "group",
@@ -38,7 +36,7 @@ func TestJWTValidator(t *testing.T) {
 		mutatedReq = req
 	})
 
-	handler, err := jwtvalidator.New(ctx, next, cfg, "jwt-validator-plugin")
+	handler, err := New(ctx, next, cfg, "jwt-validator-plugin")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +81,7 @@ func TestJWTValidator(t *testing.T) {
 }
 
 func TestJWTValidator_IATPresentAndMissing(t *testing.T) {
-	cfg := jwtvalidator.CreateConfig()
+	cfg := CreateConfig()
 	cfg.SigningSecret = "mysecret"
 	cfg.ForwardHeaders = map[string]string{
 		"Issued-At": "iat",
@@ -98,7 +96,7 @@ func TestJWTValidator_IATPresentAndMissing(t *testing.T) {
 		mutatedReq = req
 	})
 
-	handler, err := jwtvalidator.New(ctx, next, cfg, "jwt-validator-plugin")
+	handler, err := New(ctx, next, cfg, "jwt-validator-plugin")
 	if err != nil {
 		t.Fatal(err)
 	}
