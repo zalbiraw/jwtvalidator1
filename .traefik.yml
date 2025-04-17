@@ -1,12 +1,16 @@
-displayName: Demo Plugin
+displayName: JWT Validator
 type: middleware
 iconPath: .assets/icon.png
 
-import: github.com/traefik/plugindemo
+import: github.com/zalbiraw/jwtvalidator
 
-summary: '[Demo] Add Request Header'
+summary: 'Validates JWTs and extracts claims to URL query parameters and headers'
 
 testData:
-  Headers:
-    X-Demo: test
-    X-URL: '{{URL}}'
+  signingSecret: mysecret
+  forwardHeaders:
+    Group: grp
+    Expires-At: exp
+  forwardQueryParams:
+    Group: grp
+    Expires-At: exp
