@@ -1,4 +1,4 @@
-package jwtvalidator_test
+package github.com/zalbiraw/jwtvalidator
 
 import (
 	"context"
@@ -9,8 +9,9 @@ import (
 	"testing"
 	"time"
 
+	"jwtvalidator"
+
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/zalbiraw/jwtvalidator"
 )
 
 func generateJWT(secret string, claims map[string]interface{}) string {

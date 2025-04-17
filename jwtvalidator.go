@@ -1,5 +1,5 @@
 // Package jwtvalidator is a plugin to validate JWTs and forward claims to headers and query parameters.
-package jwtvalidator
+package github.com/zalbiraw/jwtvalidator
 
 import (
 	"context"
