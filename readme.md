@@ -11,7 +11,7 @@ experimental:
   plugins:
     jwtvalidator:
       moduleName: github.com/zalbiraw/jwtvalidator
-      version: v0.0.1
+      version: v0.0.2
 ```
 
 ## Dynamic Configuration Example
