@@ -17,7 +17,6 @@ type Config struct {
 	ForwardHeaders     map[string]string `json:"forwardHeaders,omitempty" yaml:"forwardHeaders,omitempty"`
 	ForwardQueryParams map[string]string `json:"forwardQueryParams,omitempty" yaml:"forwardQueryParams,omitempty"`
 	SigningSecret      string            `json:"signingSecret" yaml:"signingSecret"`
-	TokenPrefix        string            `json:"tokenPrefix,omitempty" yaml:"tokenPrefix,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
@@ -26,7 +25,6 @@ func CreateConfig() *Config {
 		AuthHeader:         "Authorization",
 		ForwardHeaders:     make(map[string]string),
 		ForwardQueryParams: make(map[string]string),
-		TokenPrefix:        "Bearer ",
 	}
 }
 
@@ -38,7 +36,6 @@ type JWTValidator struct {
 	name               string
 	next               http.Handler
 	signingSecret      string
-	tokenPrefix        string
 }
 
 // New creates a new JWTValidator handler.
@@ -56,15 +53,13 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		name:               name,
 		next:               next,
 		signingSecret:      config.SigningSecret,
-		tokenPrefix:        config.TokenPrefix,
 	}, nil
 }
 
 func (p *JWTValidator) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	if !p.checkAndWriteInvalidPrefix(rw, r) {
-		return
-	}
-	tokenString := strings.TrimPrefix(r.Header.Get(p.authHeader), p.tokenPrefix)
+	// Strip 'Bearer ' prefix from Authorization header if present
+	authHeader := r.Header.Get(p.authHeader)
+	tokenString := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
@@ -98,19 +93,6 @@ func (p *JWTValidator) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		fmt.Printf("claims iat: %v, type: %T\n", v, v)
 	}
 	p.forwardClaimsAndServe(rw, r, claims)
-}
-
-// checkAndWriteInvalidPrefix checks the token prefix and writes an error if invalid. Returns false if invalid.
-func (p *JWTValidator) checkAndWriteInvalidPrefix(rw http.ResponseWriter, r *http.Request) bool {
-	tokenString := r.Header.Get(p.authHeader)
-	if !strings.HasPrefix(tokenString, p.tokenPrefix) {
-		rw.WriteHeader(http.StatusUnauthorized)
-		if _, err := rw.Write([]byte("invalid token prefix")); err != nil {
-			fmt.Printf("failed to write response: %v\n", err)
-		}
-		return false
-	}
-	return true
 }
 
 // forwardClaimsAndServe forwards claims to headers and query params, then calls the next handler.

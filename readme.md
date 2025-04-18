@@ -38,7 +38,6 @@ http:
           group: group
           expires_at: expires_at
         authHeader: Authorization
-        tokenPrefix: Bearer 
 ```
 
 ## How It Works
