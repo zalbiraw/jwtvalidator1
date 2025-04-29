@@ -93,13 +93,6 @@ go test -v
 
 You can use this project as a [Traefik Local Plugin](https://doc.traefik.io/traefik/plugins/local-plugins/). This allows you to develop and test the plugin locally, without needing to publish it to an external registry. Reference the plugin's local path in your Traefik configuration for rapid iteration and debugging.
 
-
-## Terraform-Enabled Module
-
-This repository includes a Terraform module (`main.tf`) that provisions all necessary plugin configuration and source code into a Kubernetes `ConfigMap`. This enables you to manage and deploy the plugin as infrastructure-as-code, integrating seamlessly with your Terraform workflows.
-
-> **Security Tip:** Always use environment variables or secret managers to handle sensitive information. Avoid hardcoding secrets in `.tf` files.
-
 ---
 
 For more details, see the source code and test cases.
